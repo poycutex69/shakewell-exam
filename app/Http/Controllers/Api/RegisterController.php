@@ -24,26 +24,21 @@ class RegisterController extends BaseController
     }
 
     public function register(RegisterRequest $request): JsonResponse
-    {
-        
-        try{
-            $request->validate($request->rules(), $request->messages());        
+    {        
+        try{                   
 
-            if ($user = $this->service->create($request)) {                
-                return $this->httpResponseMessage('You have successfully registered!');
-            } else {
-                return $this->validationErrorResponse('Validation failed.', $request->er);
-            }
-        } catch (Exception $ex) {        
+            $user = $this->service->create($request);
+            
+            //needs to be moved to Event listener
+            $voucher = $user->vouchers()->first();
+            Mail::to($user->email)
+                ->send(new WelcomeEmail($user, $voucher));
+            
+            return $this->httpResponseMessage('You have successfully registered!');
+            
+        } catch (Exception $ex) {
 
-            return $this->serverErrorResponse(
-                'An error has occurred in registration.',
-                $ex->getMessage()
-            );
+            return $this->serverErrorResponse($ex->getMessage());
         }
-    }
-
-    public function test(){
-        dd('xxxx');
     }
 }

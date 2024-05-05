@@ -23,7 +23,7 @@ class LoginController extends BaseController
 
             if(Auth::attempt(['username' => $request->username, 'password' => $request->password])){ 
                 $user = Auth::user(); 
-                $success['token'] =  $user->createToken('MyApp')->plainTextToken; 
+                $success['token'] =  $user->createToken('ShakeWell')->plainTextToken; 
                 $success['name'] =  $user->first_name;
        
                 return $this->successResponse('User login successful.', $success);
@@ -32,10 +32,7 @@ class LoginController extends BaseController
                 return $this->httpResponseMessage('Unauthorised.', ['error'=>'Unauthorised'], 403);
             }
         } catch (Exception $ex) {
-            return $this->serverErrorResponse(
-                'An error has occurred in registration.',
-                $ex->getMessage()
-            );
+            return $this->serverErrorResponse($ex->getMessage());
         }
          
     }

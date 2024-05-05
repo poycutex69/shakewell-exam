@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Voucher;
+use App\Repositories\VoucherRepository;
 
 class VoucherService
 {
@@ -15,12 +16,30 @@ class VoucherService
             'user_id' => $user->id
         ]);
 
-        return $model->refresh();
+        return $model;
+    }
+
+    /**
+     * @param  \App\Models\Voucher  $model
+     *
+     * @return  void
+     */
+    public function delete(Voucher $model)
+    {
+        return $model->delete();
     }
 
     private function generateCode()
     {
-        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';        
-        return substr(str_shuffle($permitted_chars), 0, 5);
+        $repo = new VoucherRepository(new Voucher());
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $res = true;
+        while($res) {
+            $code = substr(str_shuffle($permitted_chars), 0, 5);
+            if ($repo->search(['code'=>$code])->count() === 0) {
+                return $code;
+            }
+            $res = true;
+        }
     }
 }

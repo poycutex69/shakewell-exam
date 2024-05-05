@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
+use function PHPUnit\Framework\isNull;
+
 class BaseController extends Controller
 {
     /**
@@ -20,6 +22,21 @@ class BaseController extends Controller
     }
 
     /**
+     * @param  string  $name
+     * @param  array  $data
+     *
+     * @return  \Illuminate\Http\JsonResponse
+     */
+    protected function jsonResponse(array $data) : JsonResponse
+    {
+        $response = [
+            'success' => true,
+            'data' => $data
+        ];
+        return response()->json($response, 200);
+    }
+
+    /**
      * @param  string  $message
      * @param  string  $exception // preparation to store error logs
      * @param  array  $data
@@ -28,10 +45,9 @@ class BaseController extends Controller
      */
     protected function serverErrorResponse(
         string $message,
-        $exception,
         array $data = null        
     ) : JsonResponse {
-        Log::error('Server Error:', $message);
+        Log::error($message);
         return $this->httpResponseMessage($message, $data, 500);
     }
 
@@ -70,10 +86,10 @@ class BaseController extends Controller
         int $code  = 200
     ) : JsonResponse {
 
-        return response()->json([
-            'message' => $message,
-            'data' => $data
-        ], $code);
+        $res['message'] = $message;
+        if (!empty($data)) $res['data'] = $data;
+
+        return response()->json($res, $code);
 
     }
 

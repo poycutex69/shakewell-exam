@@ -14,10 +14,7 @@ class UserService
             'username' => $request->username,
             'email' => $request->email,
             'password' => $request->password,
-        ]);
-
-        $model->createToken('ShakeWell')->plaintTextToken;
-        
+        ]);        
 
         $vs = new VoucherService();
         $vs->create($model);
