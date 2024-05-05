@@ -22,7 +22,7 @@ class SendWelcomeEmail implements ShouldQueue
      * Handle the event.
      */
     public function handle(UserRegistered $event): void
-    {
+    {        
         $user = $event->user;
         $voucher = $user->vouchers()->first();
 

@@ -11,7 +11,7 @@ class RegisterRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,9 +22,10 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required|unique|max:255',
-            'email' => 'required|email|max:255',
+            'username' => 'required|unique:users|max:255',
+            'email' => 'required|email|unique:users|max:255',
             'first_name' => 'required|max:255',
+            'password' => 'required'
 
         ];
     }
@@ -42,9 +43,13 @@ class RegisterRequest extends FormRequest
             'username.max' => 'User name must not exceed 255 characters.',
             'email.required' => 'Email is required.',
             'email.unique' => 'Email is already taken.',
+            'email.email' => 'Invalid email address.',
             'email.max' => 'Email must not exceed 255 characters.',
             'first_name.required' => 'First name is required.',
             'first_name.max' => 'First name must not exceed 255 characters.',
+            'password.required' => 'Password is required.' 
         ];
     }
+
+    
 }

@@ -2,15 +2,15 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Registered;
+use App\Events\UserRegistered;
+use App\Listeners\SendWelcomeEmail;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
 
-    protected $listen = [
-        Registered::class => []
-    ];
+    
     /**
      * Register services.
      */
@@ -24,6 +24,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Event::listen(UserRegistered::class, SendWelcomeEmail::class);
     }
 }
